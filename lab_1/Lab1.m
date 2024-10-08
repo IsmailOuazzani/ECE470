@@ -44,6 +44,7 @@ end
 plot3(o(:,1), o(:,2), o(:,3), 'r')
 hold on
 plot(myrobot, q)
+hold off
 
 %% 4.4 Inverse Kinematics
 
