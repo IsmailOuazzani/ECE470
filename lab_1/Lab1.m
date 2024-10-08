@@ -1,4 +1,3 @@
-
 %% 4.1
 % Definition of robot structure
 
@@ -57,7 +56,7 @@ inverse(test_H, myrobot) % expected: [ -0.0331 -1.0667 1.0283 3.1416 3.1032 0.81
 
 % Picking up the object from the table while maintaining constant rotation.
 % Define the trajectory of the end-effector's origin.
-o = transpose([linspace(10, 30, 100)
+d = transpose([linspace(10, 30, 100)
     linspace(23, 30, 100) 
     linspace(15, 100, 100)]);
 
@@ -67,18 +66,18 @@ R = [cos(pi/4) -sin(pi/4) 0
     0 0 1];
 
 % Matrix to store computed joint angles
-q_inverse = zeros([100,6]);
+q = zeros([100,6]);
 
 % Loop through all 100 points to compute inverse kinematics
 for i = 1:100
     H = eye(4);
     H(1:3,1:3) = R;
-    H(1:3, 4) = transpose(o(i,:));
-    q_inverse(i,:) = inverse(H, myrobot);
+    H(1:3, 4) = transpose(d(i,:));
+    q(i,:) = inverse(H, myrobot);
 end
 
 % Plot the trajectory
-plot3(o(:,1), o(:,2), o(:,3), 'r')
+plot3(d(:,1), d(:,2), d(:,3), 'r')
 hold on
 %Visualize the robot
-plot(myrobot, q_inverse)
+plot(myrobot, q)
