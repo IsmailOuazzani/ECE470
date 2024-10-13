@@ -5,9 +5,10 @@ function [q] = inverse_kuka(H, myrobot)
     % Extract relevant DH parameters
     a_1 = myrobot.a(1);
     a_2 = myrobot.a(2);
+    a_3 = myrobot.a(3);
     a_6 = myrobot.a(6);
     d_1 = myrobot.d(1);
-    d_4 = myrobot.d(4);
+    d_4 = sqrt(a_3^2 + (myrobot.d(4))^2);
     d_6 = myrobot.d(6);
     
     % Comput wrist location
