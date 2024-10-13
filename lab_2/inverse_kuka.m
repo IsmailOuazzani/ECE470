@@ -16,15 +16,13 @@ function [q] = inverse_kuka(H, myrobot)
     y_c = desired_end_effector_coordinates(2);
     z_c = desired_end_effector_coordinates(3);
     
-    
     % Compute auxiliary variables for calculations
     r_1 = sqrt(x_c^2 + y_c^2) - a_1;
     s = z_c - d_1;
     D = (r_1^2 + s^2 - a_2^2 - d_4^2)/(2*a_2*d_4);
-
     % Compute the joint angles for the first three joints
-    theta_3 = atan2(D, sqrt(1-D^2));
     theta_1 = atan2(y_c, x_c);
+    theta_3 = atan2(D, sqrt(1-D^2));
     l = d_4*sin(theta_3-pi/2);
     m = d_4*cos(theta_3-pi/2);
     theta_2 = atan2(s,r_1) - atan2(l, a_2+m);
