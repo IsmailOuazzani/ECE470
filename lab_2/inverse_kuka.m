@@ -1,26 +1,29 @@
 function [q] = inverse_kuka(H, myrobot)
     % Computes inverse kinematics through kinematic decoupling method.
     % Closed form solution was derived in the prelab.
-     
-    % Comput wrist location
-    desired_end_effector_coordinates = H(1:3, 4) - H(1:3,1:3) * [0;0; myrobot.d(6)];
-    x_c = desired_end_effector_coordinates(1);
-    y_c = desired_end_effector_coordinates(2);
-    z_c = desired_end_effector_coordinates(3);
     
     % Extract relevant DH parameters
     a_1 = myrobot.a(1);
     a_2 = myrobot.a(2);
+    a_6 = myrobot.a(6);
     d_1 = myrobot.d(1);
     d_4 = myrobot.d(4);
-
+    d_6 = myrobot.d(6);
+    
+    % Comput wrist location
+    desired_end_effector_coordinates = H(1:3, 4) - H(1:3,1:3) * [a_6; 0; d_6];
+    x_c = desired_end_effector_coordinates(1);
+    y_c = desired_end_effector_coordinates(2);
+    z_c = desired_end_effector_coordinates(3);
+    
+    
     % Compute auxiliary variables for calculations
     r_1 = sqrt(x_c^2 + y_c^2) - a_1;
     s = z_c - d_1;
     D = (r_1^2 + s^2 - a_2^2 - d_4^2)/(2*a_2*d_4);
 
     % Compute the joint angles for the first three joints
-    theta_3 = atan2(D,sqrt(1-D^2));
+    theta_3 = atan2(D, sqrt(1-D^2));
     theta_1 = atan2(y_c, x_c);
     l = d_4*sin(theta_3-pi/2);
     m = d_4*cos(theta_3-pi/2);
