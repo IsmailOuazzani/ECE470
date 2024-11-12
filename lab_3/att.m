@@ -1,7 +1,13 @@
 function [tau] = att(q,q2, myrobot)
+    % Attractive potential
+
+    % Params:
     % q: column vector of actual joint angles
     % q2: column vector of target joint angles
     % myrobot: robot structure
+
+    % Returns:
+    % tau: column vector of attractive torques
 
     C = ones(6,1);
 

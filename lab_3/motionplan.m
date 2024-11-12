@@ -1,11 +1,17 @@
 function [qref] = motionplan(q0, q2, t1, t2, myrobot, obs, tol)
-    % q is a piecewise cubic polynomial
+    % Gradient descent algorithm for motion planning of robot manipulator
+  
+    % Params:
     % q0 is a column vector with actual joint angles
     % q2 is a column vector with the final joint angles
     % t1 is start time
     % t2 is the finish time
     % obs contains the list of obstacles
     % tol is the tolerance for algorithm termination
+
+    % Returns:
+    % qref is a piecewise cubic polynomial trajectory
+
 
     alpha = 0.01;
     q = transpose(q0);

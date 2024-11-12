@@ -1,7 +1,13 @@
 function [tau] = rep(q, myrobot, obs)
+    % Repulsive potential
+
+    % Params:
     % q: column vector of actual joint angles
     % myrobot: robot structure
     % obs is an obstacle structure
+
+    % Returns:
+    % tau: column vector of repulsive torques
 
     tau = zeros(6,1);
     eta = 1;

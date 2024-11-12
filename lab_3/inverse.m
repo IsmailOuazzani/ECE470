@@ -1,5 +1,6 @@
 function [q] = inversepuma560(H, myrobot)
-    % Computes inverse kinematics through kinematic decoupling method.
+    % Computes inverse kinematics of the puma560 robot
+    % through the kinematic decoupling method.
     % Closed form solution was derived in the prelab.
      
      % Comput wrist location
