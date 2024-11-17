@@ -1,6 +1,5 @@
 function [robot] = mykuka_search(delta)
-	
-	% MYKUKA_SEARCH Generates a KUKA robot model with adjusted DH parameters.
+	% Generates a KUKA robot model with adjusted DH parameters.
 
 	% Define the original DH parameters of the KUKA robot
     DH_kuka = [25 pi/2 400 0
