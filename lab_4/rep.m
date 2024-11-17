@@ -11,6 +11,7 @@ function [tau] = rep(q, myrobot, obs)
 
     tau = zeros(6,1);
     eta = 1;
+    F_rep = zeros(3,6);
 
     for i = 1:6
         J_o_i = zeros(3,6);
@@ -37,6 +38,7 @@ function [tau] = rep(q, myrobot, obs)
         else
             F_rep_i = [0;0;0];
         end
+        F_rep(:,i) = F_rep_i;
 
         % Computing jacobian
         z_j_prev = [0;0;1];
@@ -55,5 +57,8 @@ function [tau] = rep(q, myrobot, obs)
     if norm(tau)> 0
         tau = tau / norm(tau);
     end
+
+    % Uncomment to view the repulsive forces:
+    % F_rep
 end
 
