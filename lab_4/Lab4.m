@@ -4,7 +4,7 @@ DH_kuka = [25 pi/2 400 0
     35 pi/2 0 0
     0 -pi/2 365 0
     0 pi/2 0 0
-    156 0 161.44 0];
+    -296.23 0 161.44 0];
 
 DH_forces = [25 pi/2 400 0
     315 0 0 0
@@ -34,6 +34,16 @@ p2 = [620 -375 50];
 R=[0 0 1;0 -1 0;1 0 0];
 H1=[R p1';zeros(1,3) 1];
 H2=[R p2';zeros(1,3) 1];
-q1 = inverse_kuka(H1, kuka)
-q2 = inverse_kuka(H2, kuka)
-% motionplan(q1, q2,0,10, kuka_forces, prepobs, 0.01);
+q2 = inverse_kuka(H2, kuka);
+q1 = inverse_kuka(H1, kuka);
+
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(prepobs);
+qref=motionplan(q1, q2,0,10, kuka_forces, prepobs, 0.01)
+t=linspace(0,10,300);
+q=ppval(qref,t)';
+plot(kuka,q);
+hold off
