@@ -17,11 +17,10 @@ function [tau] = rep(q, myrobot, obs)
         H_i = forward_to_link(q, myrobot, i);
 
         % Computing repulsive force, assuming obstacles are either of type
-        % cylinder (cyl) or sphere (sph)
         o_i = H_i(1:3,4);
-        if obs.type == 'cyl'
-            d_rad = min(0, norm(o_i(1:2) - obs.c) - obs.R);
-            d_z = min(0, o_i(3) - obs.h);
+        if obs.type == 'cyl' % of finite height
+            d_rad = max(0, norm(o_i(1:2) - obs.c) - obs.R);
+            d_z = max(0, o_i(3) - obs.h);
             o_i_b_norm = norm(d_rad, d_z);
             o_i_b = [0;0;d_z];
             if d_rad ~= 0

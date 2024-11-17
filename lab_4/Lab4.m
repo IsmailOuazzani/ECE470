@@ -20,4 +20,4 @@ kuka_forces = mykuka(DH_forces);
 %% 4.0 Obstacle Calculations Prep
 setupobstacle_lab4prep % load obstacles into workspace
 
-tau = rep(kuka_forces,[pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6],prepobs);
+tau = rep([pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6], kuka_forces, prepobs{1})
