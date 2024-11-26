@@ -139,6 +139,7 @@ qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
 % We leave the code that sends commands to the robot commented out.
 clf() % Get rid of the obstacles from the previous section
 
+q_home = [0 pi/2 0 0 pi/2 0]'
 qref0 = multi_pt([p0;p0], kuka, kuka_forces, obs);
 Ree = [0 0 1; 0 -1 0; 1 0 0];
 H1 = [Ree p1';zeros(1,3) 1];
@@ -153,20 +154,7 @@ qref5 = multi_pt([p_cyl_block_2;p_cyl_block_2;p3], kuka, kuka_forces, obs);
 
 
 % simulate the creative motion (without pauses for the gripper)
-qref1_traj = simulate_set_angle(qref0(end,:), qref1, 10); % in the physical world, since we know there are no obstacles within, we can just use setAngles
-qref4_traj = simulate_set_angle(qref3(1,:), qref4, 10);
-
-% Print dimensions of all the qrefs
-disp(size(qref0))
-disp(size(qref1_traj))
-disp(size(qref2))
-disp(size(qref3))
-disp(size(qref4_traj))
-disp(size(qref5))
-
-qref = [qref0; qref1_traj; qref2; qref3; qref4_traj; qref5];
-
-
+qref = multi_pt([p0;p1;p2;p3;p_cyl_block_2_prepare;p_cyl_block_2;p_cyl_block_2_prepare;p3], kuka, kuka_forces, obs);
 
 
 hold on
