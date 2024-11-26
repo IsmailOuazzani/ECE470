@@ -1,6 +1,7 @@
 *.png
 *.eps
 *.jpeg
+*.asv
 
 # robotic toolbox
 rtb

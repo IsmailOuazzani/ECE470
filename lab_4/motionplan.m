@@ -13,19 +13,25 @@ function [qref] = motionplan(q0, q2, t1, t2, myrobot, obs, tol)
     % qref is a piecewise cubic polynomial trajectory
 
 
-    alpha_att = 0.013;
+    alpha_att = 0.01;
     alpha_rep = 0.01;
 
     q = transpose(q0);
-    while norm(q(end,1:5)-q2(1:5)')>tol
+    iterations = 0;
+    max_iter = 5000;
+    while norm(q(end,1:5)-q2(1:5)')>tol && (iterations < max_iter)
         q_cur = q(end, 1:6);
         q(end+1,1:6) =  q_cur + alpha_att * att(q_cur', q2, myrobot);
-        % 
-        for j = 1:size(obs)
+        
+        for j = 1:size(obs,2)
             q(end, 1:6) = q(end, 1:6) + alpha_rep * rep(q_cur', myrobot, obs{j});
         end
-        % Plane Repulsive force
+        
+        if mod(iterations, 100) == 0 
+            fprintf('Iter: %f Error: %f \n',iterations, norm(q(end,1:5)-q2(1:5)'));
+        end
 
+        iterations = iterations + 1;
     end
 
     q(:,6) = linspace(q0(6),q2(6),size(q,1));
