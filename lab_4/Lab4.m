@@ -77,36 +77,37 @@ hold off
 %% Calibrating the position of the cylinders
 % The purpose of this section was to place the obstacles at known locations. 
 % To do so, we make the robot go to a location of our choosing and mark it with a piece of tape.
-% The tape denotes the center of the obstacle. We leave this section commented out as it contains 
-% commands to the physical robot.
+% The tape denotes the center of the obstacle.
+% We leave the code that sends commands to the robot commented out.
 
-% p_cyl_1 = [620, 0, 50];
-% desired_pts = [p_cyl_1; p_cyl_1];
-% qref_cyl_1 = multi_pt(desired_pts, kuka, kuka_forces, []);
+
+p_cyl_1 = [620, 0, 50];
+desired_pts = [p_cyl_1; p_cyl_1];
+qref_cyl_1 = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_cyl_1);
 
-% p_cyl_2 = [620, -440, 50];
-% desired_pts = [p_cyl_2; p_cyl_2];
-% qref_cyl_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
+p_cyl_2 = [620, -440, 50];
+desired_pts = [p_cyl_2; p_cyl_2];
+qref_cyl_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_cyl_2);
 
-% p_cyl_block = p1;
-% p_cyl_block(3) = 50;
-% desired_pts = [p_cyl_block; p_cyl_block];
-% qref_block = multi_pt(desired_pts, kuka, kuka_forces, []);
+p_cyl_block = p1;
+p_cyl_block(3) = 50;
+desired_pts = [p_cyl_block; p_cyl_block];
+qref_block = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_block);
 
-% p_cyl_block_2 = p3;
-% p_cyl_block_2(1) = p_cyl_block_2(1)-300;
-% p_cyl_block_2(3) = 50;
-% desired_pts = [p_cyl_block_2; p_cyl_block_2];
-% qref_block_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
+p_cyl_block_2 = p3; % Used during the creative motion planning
+p_cyl_block_2(1) = p_cyl_block_2(1)-300;
+p_cyl_block_2(3) = 50;
+desired_pts = [p_cyl_block_2; p_cyl_block_2];
+qref_block_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_block_2);
 
-% p_cyl_basket = p3;
-% p_cyl_basket(3) = 50;
-% desired_pts = [p_cyl_basket; p_cyl_basket];
-% qref_basket = multi_pt(desired_pts, kuka, kuka_forces, []);
+p_cyl_basket = p3; % Used during the creative motion planning
+p_cyl_basket(3) = 50;
+desired_pts = [p_cyl_basket; p_cyl_basket];
+qref_basket = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_basket);
 
 %% 4.2 Initial Motion Planning with Kuka
@@ -135,21 +136,48 @@ qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
 
 
 %% 4.3 Creative Motion Planning with Kuka
-% % qref0 = multi_pt([p0;p0], kuka, kuka_forces, obs);
-% % Ree = [0 0 1; 0 -1 0; 1 0 0];
-% % H1 = [Ree p1';zeros(1,3) 1];
-% % qref1 = inverse_kuka(H1, kuka);
-% % qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
-% % p_cyl_block_2_prepare = p_cyl_block_2;
-% % p_cyl_block_2_prepare(3) = 70;
-% % qref3 = multi_pt([p3;p3;p_cyl_block_2_prepare], kuka, kuka_forces, obs);
-% % H4 = [Ree p_cyl_block_2';zeros(1,3) 1];
-% % qref4 = inverse_kuka(H4, kuka);
-% % qref5 = multi_pt([p_cyl_block_2;p_cyl_block_2;p3], kuka, kuka_forces, obs);
+% We leave the code that sends commands to the robot commented out.
+clf() % Get rid of the obstacles from the previous section
 
-% % qref2 = qref2(101:size(qref2,1),:);
-% % qref3 = qref3(101:size(qref3,1),:);
-% % qref5 = qref5(101:size(qref5,1),:);
+qref0 = multi_pt([p0;p0], kuka, kuka_forces, obs);
+Ree = [0 0 1; 0 -1 0; 1 0 0];
+H1 = [Ree p1';zeros(1,3) 1];
+qref1 = inverse_kuka(H1, kuka);
+qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
+p_cyl_block_2_prepare = p_cyl_block_2;
+p_cyl_block_2_prepare(3) = 70;
+qref3 = multi_pt([p3;p3;p_cyl_block_2_prepare], kuka, kuka_forces, obs);
+H4 = [Ree p_cyl_block_2';zeros(1,3) 1];
+qref4 = inverse_kuka(H4, kuka);
+qref5 = multi_pt([p_cyl_block_2;p_cyl_block_2;p3], kuka, kuka_forces, obs);
+
+
+% simulate the creative motion (without pauses for the gripper)
+qref1_traj = simulate_set_angle(qref0(end,:), qref1, 10); % in the physical world, since we know there are no obstacles within, we can just use setAngles
+qref4_traj = simulate_set_angle(qref3(1,:), qref4, 10);
+
+% Print dimensions of all the qrefs
+disp(size(qref0))
+disp(size(qref1_traj))
+disp(size(qref2))
+disp(size(qref3))
+disp(size(qref4_traj))
+disp(size(qref5))
+
+qref = [qref0; qref1_traj; qref2; qref3; qref4_traj; qref5];
+
+
+
+
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref,'notiles');
+hold off
+
+
 
 
 % perform_traj(qref0);
@@ -207,4 +235,22 @@ function [un] = perform_traj(qref)
         setAngles(qref(i,:), 0.03);
     end
     disp("Finished moving baby")
+end
+
+
+function [qref] = simulate_set_angle(last_q, q, n)
+    % Simulate the trajectory between two points
+
+    % Params:
+    % last_q: the initial point
+    % q: the final point
+    % n: the number of points in the trajectory
+
+    % Returns:
+    % qref: a piecewise cubic polynomial trajectory
+
+    qref = zeros(n,6);
+    for i = 1:6
+        qref(:,i) = linspace(last_q(i),q(i),n);
+    end
 end
