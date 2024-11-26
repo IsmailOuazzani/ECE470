@@ -137,6 +137,7 @@ qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
 
 
 %% 4.3 Creative Motion Planning with Kuka
+% In this creative motion, we pick up and drop the first cube, then pick up and drop a second cube to another basket.
 % We leave the code that sends commands to the robot commented out.
 clf() % Get rid of the obstacles from the previous section
 
