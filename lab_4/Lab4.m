@@ -105,7 +105,8 @@ qref_block_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_block_2);
 
 p_cyl_basket = p3; % Used during the creative motion planning
-p_cyl_basket(3) = 50;
+p_cyl_basket(1) = p_cyl_block_2(1)-350;
+p_cyl_basket(3) = 70;
 desired_pts = [p_cyl_basket; p_cyl_basket];
 qref_basket = multi_pt(desired_pts, kuka, kuka_forces, []);
 % perform_traj(qref_basket);
@@ -154,8 +155,7 @@ qref5 = multi_pt([p_cyl_block_2;p_cyl_block_2;p3], kuka, kuka_forces, obs);
 
 
 % simulate the creative motion (without pauses for the gripper)
-qref = multi_pt([p0;p1;p2;p3;p_cyl_block_2_prepare;p_cyl_block_2;p_cyl_block_2_prepare;p3], kuka, kuka_forces, obs);
-
+qref = multi_pt([p0;p1;p2;p3;p_cyl_block_2_prepare;p_cyl_block_2;p_cyl_block_2_prepare; p_cyl_basket], kuka, kuka_forces, obs);
 
 hold on
 axis([-1000 1000 -1000 1000 0 2000])
@@ -164,8 +164,6 @@ plotobstacle(obs);
 t=linspace(0,10,100);
 plot(kuka,qref,'notiles');
 hold off
-
-
 
 
 % perform_traj(qref0);
@@ -223,22 +221,4 @@ function [un] = perform_traj(qref)
         setAngles(qref(i,:), 0.03);
     end
     disp("Finished moving baby")
-end
-
-
-function [qref] = simulate_set_angle(last_q, q, n)
-    % Simulate the trajectory between two points
-
-    % Params:
-    % last_q: the initial point
-    % q: the final point
-    % n: the number of points in the trajectory
-
-    % Returns:
-    % qref: a piecewise cubic polynomial trajectory
-
-    qref = zeros(n,6);
-    for i = 1:6
-        qref(:,i) = linspace(last_q(i),q(i),n);
-    end
 end
