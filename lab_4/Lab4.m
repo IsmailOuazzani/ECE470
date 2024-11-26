@@ -52,17 +52,25 @@ hold off
 
 %%  4.1 Initial Motion Planning in Simulation
 clf() % Get rid of the obstacles from the previous section
+
+% Load new obstacles
 setupobstacle
 
+% Setup points as per lab handout
 z_grid = 45; % mm
 p0 = [370 -440 150];
 p1 = [370 -440 z_grid];
 p2 = [750 -220 225];
 p3 = [620 350 225];
 
+% Define home position joint angles
+q_home = [0 pi/2 0 0 pi/2 0]';
+
+% Define points in trajectory
 desired_points = [p0;p1;p2;p3];
 
-qref = multi_pt(desired_points, kuka, kuka_forces, obs);
+% Spline interpolate using multi_pt function
+qref = multi_pt(desired_points, q_home, kuka, kuka_forces, obs);
 
 
 % Plot trajectory
@@ -76,60 +84,163 @@ hold off
 
 %% Calibrating the position of the cylinders
 % The purpose of this section was to place the obstacles at known locations. 
-% To do so, we make the robot go to a location of our choosing and mark it with a piece of tape.
+% To do so, we command the robot to go to a location of our choosing and mark it with a piece of tape.
 % The tape denotes the center of the obstacle.
 % We leave the code that sends commands to the robot commented out.
 
+% Define home position joint angles
+q_home = [0 pi/2 0 0 pi/2 0]';
 
+%% Send the robot to the location of the first cylinder obstacle
+
+% Define cylinder 2 position and spline interpolate motion from home to it
 p_cyl_1 = [620, 0, 50];
-desired_pts = [p_cyl_1; p_cyl_1];
-qref_cyl_1 = multi_pt(desired_pts, kuka, kuka_forces, []);
+desired_pts = [p_cyl_1];
+qref_cyl_1 = multi_pt(desired_pts, q_home, kuka, kuka_forces, []);
+
+% Command to send robot to the first cylinder obstacle (from home)
 % perform_traj(qref_cyl_1);
 
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref_cyl_1,'notiles');
+hold off
+
+%% Send the robot to the location of the second cylinder obstacle
+
+% Define cylinder 2 position and spline interpolate motion from home to it
 p_cyl_2 = [620, -440, 50];
-desired_pts = [p_cyl_2; p_cyl_2];
-qref_cyl_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
+desired_pts = [p_cyl_2];
+qref_cyl_2 = multi_pt(desired_pts, q_home, kuka, kuka_forces, []);
+
+% Command to send robot to the second cylinder obstacle (from home)
 % perform_traj(qref_cyl_2);
 
-p_cyl_block = p1;
-p_cyl_block(3) = 50;
-desired_pts = [p_cyl_block; p_cyl_block];
-qref_block = multi_pt(desired_pts, kuka, kuka_forces, []);
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref_cyl_2,'notiles');
+hold off
+
+%% Send the robot to the block pickup location
+
+% Define block pickup location
+p_block = p1;
+p_block(3) = 50;
+desired_pts = [p_block];
+qref_block = multi_pt(desired_pts, q_home, kuka, kuka_forces, []);
+
+% Command to send robot to block pickup location (from home)
 % perform_traj(qref_block);
 
-p_cyl_block_2 = p3; % Used during the creative motion planning
-p_cyl_block_2(1) = p_cyl_block_2(1)-300;
-p_cyl_block_2(3) = 50;
-desired_pts = [p_cyl_block_2; p_cyl_block_2];
-qref_block_2 = multi_pt(desired_pts, kuka, kuka_forces, []);
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref_block,'notiles');
+hold off
+
+%% Send robot to second block pickup location (for creative motion planning)
+
+% Define a new second block pickup location
+p_block_2 = p3;
+p_block_2(1) = p_block_2(1)-300;
+p_block_2(3) = 50;
+desired_pts = [p_block_2];
+qref_block_2 = multi_pt(desired_pts, q_home, kuka, kuka_forces, []);
+
+% Command to send robot to second block pickup location (from home)
 % perform_traj(qref_block_2);
 
-p_cyl_basket = p3; % Used during the creative motion planning
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref_block_2,'notiles');
+hold off
+
+%% Send Robot to Basket Location
+
+% Define basket position 
+p_cyl_basket = p3; 
 p_cyl_basket(3) = 50;
-desired_pts = [p_cyl_basket; p_cyl_basket];
-qref_basket = multi_pt(desired_pts, kuka, kuka_forces, []);
+desired_pts = [p_cyl_basket];
+qref_basket = multi_pt(desired_pts, q_home, kuka, kuka_forces, []);
+
+% Send robot to basket location 
 % perform_traj(qref_basket);
+
+% Plot trajectory
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qref_basket,'notiles');
+hold off
 
 %% 4.2 Initial Motion Planning with Kuka
 % We leave the code that sends commands to the robot commented out.
 
+% Define home position joint angles
+q_home = [0 pi/2 0 0 pi/2 0]';
+
 % Test trajectory to verify that the robot motion in the physical world
 % matches the one in simulation.
 desired_points = [p0;p1;p2;p3];
-qref = multi_pt(desired_points, kuka, kuka_forces, obs);
+qref = multi_pt(desired_points, q_home, kuka, kuka_forces, obs);
+
+% Send robot along trajectory
 % perform_traj(qref);
 
-
+%% Send Robot along trajectory with gripping motions
 % To displace the cube, we break down the motion into smaller segments,
 % so that we are able to control the gripper in between.
-qref0 = multi_pt([p0;p0], kuka, kuka_forces, obs);
+
+% Overall motion:
+% 1. Home->p0 : motion plan
+% 2. Open Gripper (to be ready to close on block)
+% 3. p0->p1 : setAngles (as p1 directly over p0)
+% 4. Close Gripper
+% 5. p1->p3 : motion plan
+% 6. Open Gripper
+
+qref0 = multi_pt([p0], q_home, kuka, kuka_forces, obs);
+
+q0 = qref0(end, :)';
 Ree = [0 0 1; 0 -1 0; 1 0 0];
 H1 = [Ree p1';zeros(1,3) 1];
-qref1 = inverse_kuka(H1, kuka);
-qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
+q1 = inverse_kuka(H1, kuka);
+qref1 = multi_pt([p1], q0, kuka, kuka_forces, obs);
+
+qref2 = multi_pt([p2;p3], q1, kuka, kuka_forces, obs);
+
+
+% Simulation of trajectory
+qreftotal = [qref0;qref1;qref2];
+hold on
+axis([-1000 1000 -1000 1000 0 2000])
+view(-32,50)
+plotobstacle(obs);
+t=linspace(0,10,100);
+plot(kuka,qreftotal,'notiles');
+hold off
+
+% Send robot along entire trajectory
 % perform_traj(qref0);
 % setGripper(0);
-% setAngles(qref1, 0.03);
+% setAngles(q1, 0.03); % Smoother to just setAngles instead of motion plan
 % setGripper(1);
 % perform_traj(qref2);
 % setGripper(0);
@@ -139,48 +250,77 @@ qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
 % We leave the code that sends commands to the robot commented out.
 clf() % Get rid of the obstacles from the previous section
 
-q_home = [0 pi/2 0 0 pi/2 0]'
-qref0 = multi_pt([p0;p0], kuka, kuka_forces, obs);
+% Overall idea:
+% Define a second block location and pick up both blocks indidually to put
+% them both into basket one at a time
+
+% Overall motion:
+% 1. Home->p0 : motion plan
+% 2. Open Gripper (to be ready to close on block 1)
+% 3. p0->p1 : setAngles (as p1 directly over p0)
+% 4. Close Gripper
+% 5. p1->p3 : motion plan
+% 6. Open Gripper
+% 7. p3->p_block_2_prepare : motion plan
+% 8. p_block_2_prepare -> p_block_2 : setAngles (as p_block_2_prepare
+% directly over p_block_2)
+% 9. Close Gripper
+% 10. p_block_2-> p3
+% 11. Open Gripper
+
+% Load obstacles
+setupobstacle
+
+q_home = [0 pi/2 0 0 pi/2 0]';
+qref0 = multi_pt([p0], q_home, kuka, kuka_forces, obs);
+
+q0 = qref0(end, :)';
 Ree = [0 0 1; 0 -1 0; 1 0 0];
 H1 = [Ree p1';zeros(1,3) 1];
-qref1 = inverse_kuka(H1, kuka);
-qref2 = multi_pt([p1;p2;p3], kuka, kuka_forces, obs);
-p_cyl_block_2_prepare = p_cyl_block_2;
-p_cyl_block_2_prepare(3) = 70;
-qref3 = multi_pt([p3;p3;p_cyl_block_2_prepare], kuka, kuka_forces, obs);
-H4 = [Ree p_cyl_block_2';zeros(1,3) 1];
-qref4 = inverse_kuka(H4, kuka);
-qref5 = multi_pt([p_cyl_block_2;p_cyl_block_2;p3], kuka, kuka_forces, obs);
+q1 = inverse_kuka(H1, kuka);
+qref1 = multi_pt([p1], q0, kuka, kuka_forces, obs);
 
+qref2 = multi_pt([p2;p3], q1, kuka, kuka_forces, obs);
 
-% simulate the creative motion (without pauses for the gripper)
-qref = multi_pt([p0;p1;p2;p3;p_cyl_block_2_prepare;p_cyl_block_2;p_cyl_block_2_prepare;p3], kuka, kuka_forces, obs);
+q3 = qref2(end, :)';
+p_block_2_prepare = p_block_2;
+p_block_2_prepare(3) = 70;
+qref3 = multi_pt([p_block_2_prepare], q3, kuka, kuka_forces, obs);
 
+q_block_2_prepare = qref3(end, :)';
+H2 = [Ree p_block_2';zeros(1,3) 1];
+q_block_2 = inverse_kuka(H2, kuka);
+qref4 = multi_pt([p_block_2], q_block_2_prepare, kuka, kuka_forces, obs);
 
+q_block_2 = qref4(end,:)';
+qref5 = multi_pt([p3], q_block_2, kuka, kuka_forces, obs);
+
+% Simulation of trajectory (without pauses for gripper)
+qreftotal = [qref0;qref1;qref2;qref3;qref4;qref5];
 hold on
 axis([-1000 1000 -1000 1000 0 2000])
 view(-32,50)
 plotobstacle(obs);
 t=linspace(0,10,100);
-plot(kuka,qref,'notiles');
+plot(kuka,qreftotal,'notiles');
 hold off
 
 
 
-
+% Send robot along entire trajectory
 % perform_traj(qref0);
 % setGripper(0);
-% setAngles(qref1, 0.03);
+% setAngles(q1, 0.03); % Smoother to just setAngles instead of motion plan
 % setGripper(1);
 % perform_traj(qref2);
 % setGripper(0);
 % perform_traj(qref3);
-% setAngles(qref4,0.03);
+% setAngles(q_block_2,0.03); % Smoother to just setAngles instead of motion plan
 % setGripper(1);
 % perform_traj(qref5);
 % setGripper(0);
 
-function [qref] = multi_pt(points, robot_regular, robot_forces, obstacles)
+function [qref] = multi_pt(points, q_start, robot_regular, robot_forces, obstacles)
     % Plan a trajectory between multiple points
 
     % Params:
@@ -192,24 +332,32 @@ function [qref] = multi_pt(points, robot_regular, robot_forces, obstacles)
     % Returns:
     % qref: a piecewise cubic polynomial trajectory
 
+    % Define end effector rotation
     Ree = [0 0 1; 0 -1 0; 1 0 0];
+
+    % Identify number of points to iterate through
     n_motions = size(points,1);
-    qref = zeros(100*(n_motions-1),6);
-    q_home = [0 pi/2 0 0 pi/2 0]';
-    q_cur = q_home;
-    for i = 1:n_motions-1
-        disp('Planning trajectory between')
-        pi_cur=points(i,:);
-        pi_next=points(i+1,:);
-        disp(pi_cur)
-        disp(pi_next)
+
+    % Initialize joint reference angles matrix for spline
+    qref = zeros(100*(n_motions),6);
+
+    % Identify starting joint angles as q_cur
+    q_cur = q_start;
+
+    for i = 1:n_motions
+        % Find the joint angles given point in trajectory
+        pi_next=points(i,:);
         H_next=[Ree pi_next';zeros(1,3) 1];
         q_next = inverse_kuka(H_next, robot_regular);
+
+        % Motion plan between current joint angles and new joint angles
         qref_i = motionplan(q_cur, q_next, 0, 10, robot_forces, obstacles, 0.01);
         t_i =linspace(0,10,100);
         q_i=ppval(qref_i,t_i)';
         qref((i-1)*100+1:i*100,:)=q_i;
         fprintf('Successfully computed trajectory between points %f and %f \n',i,i+1)
+
+        % New joint angle becomes current after spline interpolation
         q_cur = q_next;
     end
 end
