@@ -240,7 +240,8 @@ hold off
 % Send robot along entire trajectory
 % perform_traj(qref0);
 % setGripper(0);
-% setAngles(q1, 0.03); % Smoother to just setAngles instead of motion plan
+% setAngles(q1, 0.03); % Smoother to just setAngles instead of motion
+% plan as no objects in between
 % setGripper(1);
 % perform_traj(qref2);
 % setGripper(0);
@@ -311,11 +312,13 @@ hold off
 % perform_traj(qref0);
 % setGripper(0);
 % setAngles(q1, 0.03); % Smoother to just setAngles instead of motion plan
+% as no obstacles in between
 % setGripper(1);
 % perform_traj(qref2);
 % setGripper(0);
 % perform_traj(qref3);
-% setAngles(q_block_2,0.03); % Smoother to just setAngles instead of motion plan
+% setAngles(q_block_2,0.03); % Smoother to just setAngles instead of motion
+% plan as no obstacles in between
 % setGripper(1);
 % perform_traj(qref5);
 % setGripper(0);
@@ -325,6 +328,7 @@ function [qref] = multi_pt(points, q_start, robot_regular, robot_forces, obstacl
 
     % Params:
     % points: a matrix with the desired points
+    % qstart: starting joint angle of trajectory
     % robot_regular: robot object with the regular DH table
     % robot_forces: robot object with the DH table for forces
     % obstacles: a cell array with the obstacles
@@ -371,22 +375,4 @@ function [un] = perform_traj(qref)
         setAngles(qref(i,:), 0.03);
     end
     disp("Finished moving baby")
-end
-
-
-function [qref] = simulate_set_angle(last_q, q, n)
-    % Simulate the trajectory between two points
-
-    % Params:
-    % last_q: the initial point
-    % q: the final point
-    % n: the number of points in the trajectory
-
-    % Returns:
-    % qref: a piecewise cubic polynomial trajectory
-
-    qref = zeros(n,6);
-    for i = 1:6
-        qref(:,i) = linspace(last_q(i),q(i),n);
-    end
 end
